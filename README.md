@@ -9,6 +9,9 @@ Using standard fixed CSS column: 3  will order (sorting) each items vertically f
 
 This is the solution to create similar logic but order each items horizontally from left to right and then wrap.
 
+Responsive and support viewport resizing to dynamically calcualte total column.
+
+
 ## Mini Text Editor (MTE)
 Write textual content for news, stories, articles, etc.
 
