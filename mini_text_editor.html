@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Text Editor Demo</title>
+<link rel="stylesheet" href="assets/css/mte_v01.css">
+<script src="assets/js/mte_v01.js"></script>
+<style>
+#mySaveBtn{margin-top:16px;padding:10px 40px;font-size:16px;cursor:pointer;border:none;background:#2563eb;color:#fff;border-radius:6px;transition:background .2s}
+#mySaveBtn:hover{background:#1d4ed8}
+#mySaveBtn:disabled{opacity:.5;cursor:default}
+.mySection{margin-top:32px}
+.mySection h2{font-size:1.1rem;margin-bottom:8px}
+#myOutput{background:#f5f5f5;border:1px solid #ddd;padding:15px;overflow:auto;white-space:pre-wrap;word-break:break-word;border-radius:6px;max-height:300px;font-size:13px;margin:0}
+#myPreview{border:1px solid #ddd;padding:20px;min-height:100px;border-radius:6px;line-height:1.6}
+#myPreview a{color:#2563eb;text-decoration:underline}
+#myToast{visibility:hidden;min-width:200px;background:#333;color:#fff;text-align:center;padding:12px 20px;border-radius:6px;position:fixed;bottom:30px;left:50%;transform:translateX(-50%);font-size:14px;transition:visibility 0s,opacity .4s;opacity:0;z-index:999}
+#myToast.show{visibility:visible;opacity:1;transition:visibility 0s,opacity .4s}
+</style>
+</head>
+<body>
+
+<h1>Mini Text Editor</h1>
+
+<div id="mte_demo">This Mini Text Editor is for <b>bloggers</b> or <b>writers</b> to write <u>textual content for the web</u>.<br><br>You can type with <b>bold</b>, <i>italic</i>, <u>underscore</u>, or <strike>strikethrough</strike>.<br><br>This is demo of numbered list<ol><li>Monday</li><li>Tuesday</li><li>Wednesday</li></ol><div><br></div>This is bullet list<br><ul><li>Kimchi</li><li>Soup</li><li>Pork</li></ul><div><br></div><div>You can also create a link like <a href="https://quick.work" target="_blank">https://quick.work</a></div><div><br></div><div>Have a good day~</div></div>
+
+<button id="mySaveBtn">Save</button>
+
+<div class="mySection">
+  <h2>Text (HTML code) to Save into DB</h2>
+  <pre id="myOutput"></pre>
+</div>
+
+<div class="mySection">
+  <h2>Preview (Loaded From DB)</h2>
+  <div id="myPreview"></div>
+</div>
+
+<div id="myToast"></div>
+
+<script>
+window.addEventListener('load', function() {
+  var editorEl = initMiniTextEditor(document.getElementById('mte_demo'));
+  if (!editorEl) return;
+
+  var btnSave = document.getElementById('mySaveBtn');
+  var output = document.getElementById('myOutput');
+  var preview = document.getElementById('myPreview');
+  var toast = document.getElementById('myToast');
+
+  btnSave.addEventListener('click', function() {
+    var html = editorEl.innerHTML.trim();
+
+    output.textContent = html;
+
+    btnSave.disabled = true;
+    btnSave.textContent = 'Saving...';
+
+    setTimeout(function() {
+      preview.innerHTML = html;
+      btnSave.disabled = false;
+      btnSave.textContent = 'Save';
+
+      toast.textContent = 'Content saved & loaded from DB OK';
+      toast.className = 'show';
+      setTimeout(function() { toast.className = ''; }, 2200);
+    }, 500);
+  });
+});
+</script>
+
+</body>
+</html>
