@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Flexbox Masonry Grid</title>
+  <style>
+    :root {
+      --masonry-gap: 16px;
+      --item-bg: #f4f4f5;
+      --item-border-radius: 8px;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+
+    /* Main grid container holds columns side-by-side */
+    .masonry-grid {
+      display: flex;
+      gap: var(--masonry-gap);
+      width: 100%;
+      align-items: flex-start;
+    }
+
+    /* Individual columns stack items vertically */
+    .masonry-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--masonry-gap);
+      width: 0; /* Prevents wide content from breaking equal flex widths */
+    }
+
+    /* Item card styling */
+    .masonry-item {
+      background: var(--item-bg);
+      padding: 16px;
+      border-radius: var(--item-border-radius);
+      box-sizing: border-box;
+      width: 100%;
+      transition: transform 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <div class="masonry-grid"></div>
+  </main>
+
+  <script>
+    /**
+     * Initializes or re-renders the masonry layout.
+     * @param {string} gridSelector - CSS selector for the grid container.
+     * @param {number} columnsCount - Number of columns (0 = auto-calculate based on width).
+     * @param {number} minItemWidth - Target minimum pixel width per column for auto-calculation.
+     */
+    function initMasonry(gridSelector, columnsCount = 0, minItemWidth = 250) {
+      const grid = document.querySelector(gridSelector);
+      if (!grid) return;
+
+      // 1. Auto-calculate columns based on container width if columnsCount is 0
+      if (columnsCount < 1) {
+        const gridWidth = grid.offsetWidth;
+        columnsCount = Math.max(1, Math.floor(gridWidth / minItemWidth));
+      }
+
+      // 2. Collect all items and restore their original sequence using dataset.index
+      const items = Array.from(grid.querySelectorAll('.masonry-item'))
+        .sort((a, b) => Number(a.dataset.index) - Number(b.dataset.index));
+      
+      if (items.length === 0) return;
+
+      // 3. Clear container and build fresh column wrappers
+      grid.innerHTML = '';
+      const columns = Array.from({ length: columnsCount }, () => {
+        const col = document.createElement('div');
+        col.classList.add('masonry-column');
+        grid.appendChild(col);
+        return col;
+      });
+
+      // 4. Distribute items sequentially into the currently shortest column
+      items.forEach(item => {
+        const shortestCol = columns.reduce((prev, curr) => 
+          curr.offsetHeight < prev.offsetHeight ? curr : prev
+        );
+        shortestCol.appendChild(item);
+      });
+    }
+
+    /**
+     * Demo Setup: Generate dummy items with random heights
+     */
+    function generateDemoItems(gridSelector, count = 20) {
+      const grid = document.querySelector(gridSelector);
+      if (!grid) return;
+
+      grid.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 0; i < count; i++) {
+        const item = document.createElement('div');
+        item.classList.add('masonry-item');
+        item.dataset.index = i; // Locks original order for resize reflows
+
+        // Assign random height between 120px and 350px
+        const randomHeight = Math.floor(Math.random() * 250) + 50;
+        item.style.height = `${randomHeight}px`;
+
+        item.innerHTML = `Item ${i + 1}<br>H:${randomHeight}px`;
+
+        fragment.appendChild(item);
+      }
+
+      grid.appendChild(fragment);
+    }
+
+    // Initialize on window load
+    window.addEventListener('load', () => {
+      generateDemoItems('.masonry-grid', 24);
+      initMasonry('.masonry-grid');
+    });
+
+    // Debounced resize handler for responsive column reflows
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        initMasonry('.masonry-grid');
+      }, 300);
+    });
+  </script>
+</body>
+</html>
