@@ -1,24 +1,18 @@
-# HTML-Components
-Collection of useful HTML simple components
+# Mini Text Editor
 
-
-## Masonry
-Display image gallery in masonry style.
-
-Using standard fixed CSS column: 3  will order (sorting) each items vertically from top to bottom then to next column.
-
-This is the solution to create similar logic but order each items horizontally from left to right and then wrap.
-
-Responsive and support viewport resizing to dynamically calcualte total column.
-
-
-## Mini Text Editor (MTE)
 Write textual content for news, stories, articles, etc.
 
-It has basic text styling for **bold**, *italic*, underscore, and strikethrough.
+A web app component to allow writers to conveniently type-in long text.
 
-The output can be saved into database safely.
+# Requirements
+1. Small JS+CSS code, has no dependency.
+2. Must support basic text styling for **bold**, *italic*, underscore, and strikethrough.
+3. Support **WYSIWYG** (What You See Is What You Get). 
+4. The output should be HTML text and can easily be saved into database.
+5. Do not add unnecessary, must maintain simple and clean JS code.
 
-NOTE: 
-1. To write need to load tiny JS code
+# NOTES 
+1. To write text need to load tiny JS code
 2. To display the text in public page there is no need to load the JS code because it is already HTML formatted.
+
+![Mini Text Editor screenshot](MiniTextEditor-screenshot.png)
